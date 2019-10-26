@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ZadatakDBModelStoreContainer" CdmEntityContainer="ZadatakDBEntities">
+    <EntitySetMapping Name="Proizvods">
+      <EntityTypeMapping TypeName="ZadatakDBModel.Proizvod">
+        <MappingFragment StoreEntitySet="Proizvod">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="naziv" ColumnName="naziv" />
+          <ScalarProperty Name="opis" ColumnName="opis" />
+          <ScalarProperty Name="kategorija" ColumnName="kategorija" />
+          <ScalarProperty Name="proizvodjac" ColumnName="proizvodjac" />
+          <ScalarProperty Name="dobavljac" ColumnName="dobavljac" />
+          <ScalarProperty Name="cena" ColumnName="cena" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

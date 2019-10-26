@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>USING DATABASE</h2>
+
+<table id="proizvodi-tabela">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Opis</th>
+            <th>Kategorija</th>
+            <th>Proizvodjac</th>
+            <th>Dobavljac</th>
+            <th>Cena</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+<button class="btn" onclick="location.href='@Url.Action("IndexJson","Proizvod")'">Predji na JSON</button>
+<button class="btn" onclick="PopupForm('@Url.Action("AddOrEdit", "Proizvod")')">Dodaj proizvod</button>
+<link href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+        let popup, dataTable;
+
+        $(function () {
+            dataTable = $("#proizvodi-tabela").DataTable({
+                "ajax": {
+                    "url": "/Proizvod/GetData",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "columns": [
+                    { "data": "naziv" },
+                    { "data": "opis" },
+                    { "data": "kategorija" },
+                    { "data": "proizvodjac" },
+                    { "data": "dobavljac" },
+                    { "data": "cena" },
+                    {
+                        "data": "id", "render": function (data) {
+                            return "<button onclick=PopupForm('@Url.Action("AddOrEdit","Proizvod")/" + data + "')>Edit</button><button onclick=Delete("+data+")>Delete</button>";
+                    },
+                        "orderable": false,
+                        "searchable":false,
+                        "width":"150px"
+                    }
+                ]
+            });
+        });
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    popup = formDiv.dialog({
+                        height: 500,
+                        width: 700,
+                        close: function () {
+                            popup.dialog('destroy').remove();
+                        }
+
+                    });
+                });
+        }
+
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            popup.dialog('close');
+                            dataTable.ajax.reload();
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete","Proizvod")/' + id,
+                success: function (data) {
+                    if (data.success)
+                    {
+                        dataTable.ajax.reload();
+                    }
+                }
+            });
+    }
+    </script>
+
+}
